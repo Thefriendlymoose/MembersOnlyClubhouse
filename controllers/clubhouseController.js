@@ -88,11 +88,28 @@ var create_message_post = function(req,res,next){
 }
 
 var join_club_get = function(req,res,next){
-    
+    res.render("join_club", {title: 'Join Clubhouse', user: res.locals.currentUser})
 }
 
 var join_club_post = function(req,res,next){
-    
+    if(req.body.passcode == process.env.CLUB_PASSCODE){
+        var user = new User({
+            firstname: res.locals.currentUser.firstname,
+            lastname: res.locals.currentUser.lastname,
+            email: res.locals.currentUser.email,
+            password: res.locals.currentUser.password,
+            ismember: true,
+            admin: res.locals.currentUser.admin,
+            _id: res.locals.currentUser._id
+        })
+
+        User.findByIdAndUpdate(res.locals.currentUser._id, user, {}, function(err){
+            if(err){return next(err);}
+            res.redirect('/');
+        })
+    } else {
+        res.render('join_club', {title: "Join Club", message: 'Wrong Passcode', user: res.locals.currentUser });
+    }
 }
 
 var become_admin_get = function(req,res,next){

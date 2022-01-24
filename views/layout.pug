@@ -19,11 +19,16 @@ html
                                         if !user.admin
                                             li.nav-item 
                                                 a.nav-link(href="#") Become Admin
+                                        else 
+                                            li.nav-item 
+                                                a.nav-link(href="#") Remove Admin
                                         li.nav-item 
-                                            a.nav-link(href="#") Create Message  
+                                            a.nav-link(href="#") Create Message 
+                                        li.nav-item 
+                                            a.nav-link(href="#") Leave Club 
                                     else 
                                         li.nav-item 
-                                            a.nav-link(href="#") Join Clubhouse
+                                            a.nav-link(href="/join-club") Join Clubhouse
                                     li.nav-item 
                                         a.nav-link(href="/log-out") Logout
                                 else   

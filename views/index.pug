@@ -7,4 +7,6 @@ block content
                 .container
                     p #{message.body}
         else 
-            p There are no messages  
+            if user
+                if user.ismember 
+                    h1 Welcome to the club 

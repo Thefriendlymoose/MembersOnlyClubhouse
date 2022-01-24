@@ -20,6 +20,7 @@ module.exports = (passport) => {
           User.findOne({ email: email })
               .then(user => {
                 if (!user) {
+                    console.log('user not exist')
                     return done(null, false, { message: "Incorrect username" });
                 }
                 bcrypt.compare(password, user.password, (err, res) => {
@@ -27,6 +28,7 @@ module.exports = (passport) => {
                     if (res) {
                         return done(null, user)
                     } else {
+                        console.log('wrong pass')
                         return done(null, false, { message: "Incorrect password" })
                     }
                 });
