@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .text-center
+        main.form-signin 
+            form(action="/log-in" method="POST")
+                h1.h3.mb-3.fw-normal Please Sign in 
+                .form-floating 
+                    input.form-control#email(type="email", placeholder="name@example.com", name="email")
+                    label(for="email") Email address 
+                .form-floating 
+                    input.form-control#password(type="password", placeholder="Password", name="password")
+                    label(for="password") Password 
+                button.w-100.btn.btn-lg.btn-primary.mt-3(type="submit") Sign in
+        if message 
+            p #{message}

@@ -1,0 +1,10 @@
+extends layout 
+
+block content
+    .container 
+        if messages.length
+            each message in messages 
+                .container
+                    p #{message.body}
+        else 
+            p There are no messages  

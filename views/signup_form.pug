@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    .text-center
+        main.form-signup 
+            form(action="/sign-up" method="post")
+                h1.h3.mb-3.fw-normal Please Create an account below 
+                .form-floating
+                    input.form-control.form-signup-top#firstname(type="text", placeholder="First Name", name="firstname")
+                    label(for="firstname") First Name 
+                .form-floating 
+                    input.form-control.form-signup-middle#lastname(type="text", placeholder="Last Name", name="lastname")
+                    label(for="lastname") Last Name
+                .form-floating
+                    input.form-control.form-signup-middle#email(type="email", placeholder="name@example.com", name="email")
+                    label(for="email") Email address 
+                .form-floating 
+                    input.form-control.form-signup-middle#password(type="password", placeholder="Password", name="password")
+                    label(for="password") Password
+                .form-floating 
+                    input.form-control.form-signup-bottom#password2(type="password", placeholder="Password", name="password2")
+                    label(for="password2") Repeat Password    
+
+                button.w-100.btn.btn-lg.btn-primary.mt-3(type="submit") Sign up
+            if errors
+                ul 
+                    each error in errors 
+                        li #{error.msg}
