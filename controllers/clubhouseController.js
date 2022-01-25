@@ -18,8 +18,6 @@ var sign_up_get = function(req,res,next){
     res.render("signup_form", {title: 'Sign Up', user:res.locals.currentUser})
 }
 
-
-
 var sign_up_post = [
     body('firstname', 'First Name required').trim().isLength({min: 1}).escape(),
     body('lastname', 'Last Name is required').trim().isLength({min: 1}).escape(),
