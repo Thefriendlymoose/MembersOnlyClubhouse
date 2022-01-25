@@ -14,7 +14,7 @@ router.get('/log-out', clubhouseController.log_out_get);
 
 router.get('/create-message', clubhouseController.create_message_get);
 router.post('/create-message', clubhouseController.create_message_post);
-router.post('/message/:id/delete', clubhouseController.delete_message_post);
+router.post('/delete-message', clubhouseController.delete_message_post);
 
 router.get('/join-club', clubhouseController.join_club_get);
 router.post('/join-club', clubhouseController.join_club_post);

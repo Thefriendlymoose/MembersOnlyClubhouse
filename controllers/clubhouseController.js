@@ -7,6 +7,7 @@ var passport = require('passport');
 
 var index_get = function(req,res,next){
     Message.find()
+           .sort({createdAt: -1})
            .populate('user')
            .exec((err, messages) => {
                if(err){return next(err);}
@@ -23,12 +24,15 @@ var sign_up_post = [
     body('lastname', 'Last Name is required').trim().isLength({min: 1}).escape(),
     body('email', 'Email is required').trim().isLength({min:1}).escape(),
     body('password', 'Password is required').trim().isLength({min: 8}).escape(),
+    body('password2', 'Password is required').trim().isLength({min: 8}).escape(),
 
     (req, res, next) => {
         const errors = validationResult(req);
 
         if(!errors.isEmpty()){
             res.render("signup_form", {title: "Sign up", errors: errors.array()})
+        } else if(req.body.password != req.body.password2){
+            res.render("signup_form", {title: "Sign up", errors: ['passwords not matching']})
         } else {
             bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
                 if(err){
@@ -80,15 +84,37 @@ var log_out_get = function(req,res,next){
 }
 
 var create_message_get = function(req,res,next){
-    
+    res.render('create_message', {title: 'Create Message', user: res.locals.currentUser});
 }
 
-var create_message_post = function(req,res,next){
-    
-}
+var create_message_post = [
+    body('title', 'Title required').trim().isLength({min: 1}).escape(),
+    body('body', 'Body required').trim().isLength({min: 1}).escape(),
+    (req,res,next) => {
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+
+        } else {
+            var message = new Message({
+                title: req.body.title,
+                body: req.body.body,
+                user: res.locals.currentUser._id
+            });
+
+            message.save(err => {
+                if(err){return next(err);}
+                res.redirect('/');
+            })
+        }
+    }
+]
 
 var delete_message_post = function(req,res,next){
-    
+    Message.findByIdAndDelete(req.body.messageid, function deleteMessage(err){
+        if(err) {return next(err);}
+        res.redirect('/');
+    });
 }
 
 var join_club_get = function(req,res,next){

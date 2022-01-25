@@ -1,3 +1,8 @@
+body{
+    font-family: 'roboto', sans-serif;
+    background-color: #E5E5E5;
+}
+
 .form-signin {
     width: 100%;
     max-width: 330px;
@@ -63,4 +68,54 @@
     max-width: 330px;
     padding: 15px;
     margin: auto;
+}
+
+/* Messages */
+
+.message{
+    width: 700px;
+    margin: 15px auto;
+}
+
+.message-body-bg{
+    background-color: #F1F1F1;
+    color: #000000;
+    height: 100px;
+    padding-top: 10px;
+    position: relative;
+}
+
+.message-label-color{
+    color: #F5F5F5;
+}
+
+.message-label-bg{
+    background-color: #C4C4C4;
+    height: 25px;
+    display: inline-block;
+}
+
+.label-color {
+    color: #F5F5F5;
+}
+
+.label-col{
+    width:fit-content;
+    float: left;
+}
+
+/* DELETE BUTTON */
+
+.delete-message{
+    margin:0;
+    width: 100%;
+    position: absolute;
+    top:10px;
+    left:590px;
+}
+
+
+.delete-button{
+    font-size: 10px;
+    font-family: 'roboto';
 }

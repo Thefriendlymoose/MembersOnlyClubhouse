@@ -11,4 +11,9 @@ var userSchema = new Schema({
     ismember: {type: Boolean, default: false}
 });
 
+userSchema.virtual('fullname')
+          .get(function(){
+              return (this.firstname + " " + this.lastname);
+          })
+
 module.exports = mongoose.model('User', userSchema);

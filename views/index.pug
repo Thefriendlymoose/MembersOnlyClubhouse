@@ -1,11 +1,41 @@
 extends layout 
 
 block content
-    .container 
+    .container.col
         if messages.length
             each message in messages 
-                .container
-                    p #{message.body}
+                .row.message
+                    .row.message-body-bg  
+                        p #{message.body}
+                        if user && user.admin
+                            .delete-message 
+                                form.delete-form(action="/delete-message", method="POST")
+                                    input#messageid.form-control(type='hidden',name='messageid', required='true', value=message._id )
+                                    button.btn.btn-warning.btn-sm.delete-button(type="submit") Delete Message
+                    .row.message-label-bg
+                        .col.label-col
+                            p 
+                                span.label-color Title: 
+                                .
+                                    #{message.title}
+                        .col.label-col
+                            p 
+                                span.label-color Posted On: 
+                                .
+                                    #{message.timestampFormatted}
+                        .col.label-col
+                            if user && user.ismember 
+                                p 
+                                    span.label-color Posted By: 
+                                    . 
+                                        #{message.user.fullname}
+                            else 
+                                p 
+                                    span.label-color Posted by: 
+                                    . 
+                                        REDACTED
+                        
+                        
         else 
             if user
                 if user.ismember 
