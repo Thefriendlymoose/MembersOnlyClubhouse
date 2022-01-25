@@ -26,6 +26,8 @@ mongoose.connect(mongoDB, {useNewURLParser: true, useUnifiedTopology: true})
     })
 
 // middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 app.use(helmet());
 app.use(compression());
 
@@ -34,7 +36,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(session({secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true}));
 
 //passport middleware
@@ -47,10 +48,14 @@ app.use(function(req, res, next) {
 });
 
 
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 
 app.use('/', clubhouseRouter);
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+  });
 
 // error handler
 app.use(function(err, req, res, next) {
