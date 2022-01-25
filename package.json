@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "Exclusive clubhouse where your members can write anonymous posts. Inside the clubhouse, members can see who the author of a post is, but outside they can only see the story and wonder who wrote it.",
   "main": "app.js",
+  "engines": {
+    "node": "16.13.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "$ENV:DEBUG = MembersOnlyClubhouse:*; npm start"
   },
   "repository": {
     "type": "git",
