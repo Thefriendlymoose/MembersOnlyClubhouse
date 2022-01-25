@@ -1,7 +1,6 @@
 var Message = require('../models/message');
 var User = require('../models/user');
-var {body,validationResult} = require("express-validator");
-var async = require('async');
+var {body,validationResult, check} = require("express-validator");
 var bcrypt = require('bcryptjs');
 var passport = require('passport');
 
@@ -19,20 +18,35 @@ var sign_up_get = function(req,res,next){
     res.render("signup_form", {title: 'Sign Up', user:res.locals.currentUser})
 }
 
+
+
 var sign_up_post = [
     body('firstname', 'First Name required').trim().isLength({min: 1}).escape(),
     body('lastname', 'Last Name is required').trim().isLength({min: 1}).escape(),
     body('email', 'Email is required').trim().isLength({min:1}).escape(),
+    check('email').normalizeEmail().isEmail().withMessage('Invalid Email').custom((value) =>{
+        return new Promise((resolve, reject)=>{
+            User.findOne({email:value}, (err, user)=>{
+                if(err){
+                    reject(new Error('Server Error'))
+                }
+                if(user){
+                    reject(new Error('Email already in use'))
+                }
+                resolve(true)
+            })
+        })
+    }),
     body('password', 'Password is required').trim().isLength({min: 8}).escape(),
-    body('password2', 'Password is required').trim().isLength({min: 8}).escape(),
+    check('password').exists(),
+    check('password2', 'Password confirmation field must have the same value as the password field').exists().custom((value, {req}) => value === req.body.password),
+    body('password2', 'Password confirmation is required').trim().isLength({min: 8}).escape(),
 
-    (req, res, next) => {
+    (req, res, next) => {  
         const errors = validationResult(req);
 
         if(!errors.isEmpty()){
             res.render("signup_form", {title: "Sign up", errors: errors.array()})
-        } else if(req.body.password != req.body.password2){
-            res.render("signup_form", {title: "Sign up", errors: ['passwords not matching']})
         } else {
             bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
                 if(err){
@@ -67,8 +81,15 @@ var sign_up_post = [
 
 ]
 
+
+
+
 var log_in_get = function(req,res,next){
-    res.render("login_form", {title: 'Clubhouse Login', user: res.locals.currentUser})
+    if(res.locals.currentUser){
+        res.redirect('/');
+    } else {
+        res.render("login_form", {title: 'Clubhouse Login', user: res.locals.currentUser});
+    }
 }
 
 var log_in_post = function(req,res,next){
@@ -118,9 +139,15 @@ var delete_message_post = function(req,res,next){
 }
 
 var join_club_get = function(req,res,next){
-    res.render("join_club", {title: 'Join Clubhouse', user: res.locals.currentUser})
+    if(!res.locals.currentUser){
+        res.redirect('/log-in')
+    } else {
+        res.render("join_club", {title: 'Join Clubhouse', user: res.locals.currentUser})
+    }
+    
 }
 
+// fix Sanitization 
 var join_club_post = function(req,res,next){
     if(req.body.passcode == process.env.CLUB_PASSCODE){
 
@@ -134,16 +161,29 @@ var join_club_post = function(req,res,next){
 }
 
 var leave_club_get = function(req,res,next){
-    User.findByIdAndUpdate(res.locals.currentUser._id, {ismember: false}, {}, err => {
-        if(err){return next(err);}
-        res.redirect('/');
-    })
+    if(!res.locals.currentUser){
+        res.redirect('/log-in');
+    } else {
+        User.findByIdAndUpdate(res.locals.currentUser._id, {ismember: false}, {}, err => {
+            if(err){return next(err);}
+            res.redirect('/');
+        });
+    }
+
 }
 
 var become_admin_get = function(req,res,next){
-    res.render("become_admin", {title: 'Become Admin', user: res.locals.currentUser});
+    if(!res.locals.currentUser){
+        res.redirect('/log-in');
+    } else if(!res.locals.currentUser.ismember) {
+        res.redirect('/join-club');
+    } else {
+        res.render("become_admin", {title: 'Become Admin', user: res.locals.currentUser});
+    }
+    
 }
 
+// fix Sanitization 
 var become_admin_post = function(req,res,next){
     if(req.body.password == process.env.ADMIN_PASSWORD){
         User.findByIdAndUpdate(res.locals.currentUser._id, {admin: true}, {}, function(err){
@@ -156,10 +196,14 @@ var become_admin_post = function(req,res,next){
 }
 
 var remove_admin_get = function(req,res,next){
-    User.findByIdAndUpdate(res.locals.currentUser._id, {admin: false}, {}, err => {
-        if(err){return next(err);}
-        res.redirect('/');
-    })
+    if(!res.locals.currentUser){
+        res.redirect('/log-in');
+    } else {
+        User.findByIdAndUpdate(res.locals.currentUser._id, {admin: false}, {}, err => {
+            if(err){return next(err);}
+            res.redirect('/');
+        })
+    }
 }
 
 
