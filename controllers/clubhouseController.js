@@ -87,23 +87,18 @@ var create_message_post = function(req,res,next){
     
 }
 
+var delete_message_post = function(req,res,next){
+    
+}
+
 var join_club_get = function(req,res,next){
     res.render("join_club", {title: 'Join Clubhouse', user: res.locals.currentUser})
 }
 
 var join_club_post = function(req,res,next){
     if(req.body.passcode == process.env.CLUB_PASSCODE){
-        var user = new User({
-            firstname: res.locals.currentUser.firstname,
-            lastname: res.locals.currentUser.lastname,
-            email: res.locals.currentUser.email,
-            password: res.locals.currentUser.password,
-            ismember: true,
-            admin: res.locals.currentUser.admin,
-            _id: res.locals.currentUser._id
-        })
 
-        User.findByIdAndUpdate(res.locals.currentUser._id, user, {}, function(err){
+        User.findByIdAndUpdate(res.locals.currentUser._id, {ismember: true}, {}, function(err){
             if(err){return next(err);}
             res.redirect('/');
         })
@@ -112,17 +107,36 @@ var join_club_post = function(req,res,next){
     }
 }
 
+var leave_club_get = function(req,res,next){
+    User.findByIdAndUpdate(res.locals.currentUser._id, {ismember: false}, {}, err => {
+        if(err){return next(err);}
+        res.redirect('/');
+    })
+}
+
 var become_admin_get = function(req,res,next){
-    
+    res.render("become_admin", {title: 'Become Admin', user: res.locals.currentUser});
 }
 
 var become_admin_post = function(req,res,next){
-    
+    if(req.body.password == process.env.ADMIN_PASSWORD){
+        User.findByIdAndUpdate(res.locals.currentUser._id, {admin: true}, {}, function(err){
+            if(err){return next(err);}
+            res.redirect('/');
+        })
+    } else {
+        res.render('become_admin', {title: "Become Admin", message: 'Wrong Password', user: res.locals.currentUser });
+    }
 }
 
-var message_delete_post = function(req,res,next){
-    
+var remove_admin_get = function(req,res,next){
+    User.findByIdAndUpdate(res.locals.currentUser._id, {admin: false}, {}, err => {
+        if(err){return next(err);}
+        res.redirect('/');
+    })
 }
+
+
 
 
 module.exports = {
@@ -134,9 +148,12 @@ module.exports = {
     log_out_get,
     create_message_get,
     create_message_post,
+    delete_message_post,
     join_club_get,
     join_club_post,
+    leave_club_get,
     become_admin_get,
     become_admin_post,
-    message_delete_post
+    remove_admin_get,
+    
 }

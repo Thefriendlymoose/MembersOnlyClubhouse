@@ -18,14 +18,14 @@ html
                                     if user.ismember 
                                         if !user.admin
                                             li.nav-item 
-                                                a.nav-link(href="#") Become Admin
+                                                a.nav-link(href="/become-admin") Become Admin
                                         else 
                                             li.nav-item 
-                                                a.nav-link(href="#") Remove Admin
+                                                a.nav-link(href="/remove-admin") Remove Admin
                                         li.nav-item 
                                             a.nav-link(href="#") Create Message 
                                         li.nav-item 
-                                            a.nav-link(href="#") Leave Club 
+                                            a.nav-link(href="/leave-club") Leave Club 
                                     else 
                                         li.nav-item 
                                             a.nav-link(href="/join-club") Join Clubhouse
