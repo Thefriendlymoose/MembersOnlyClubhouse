@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var clubhouseController = require('../controllers/clubhouseController');
 
-router.get('/', clubhouseController.index_get);
+
 
 
 router.get('/sign-up', clubhouseController.sign_up_get);
@@ -24,7 +24,7 @@ router.get('/become-admin', clubhouseController.become_admin_get);
 router.post('/become-admin', clubhouseController.become_admin_post);
 router.get('/remove-admin', clubhouseController.remove_admin_get);
 
-
+router.get('/', clubhouseController.index_get);
 
 
 
